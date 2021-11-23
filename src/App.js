@@ -1,16 +1,20 @@
-import { useState } from "react";
+import { IKImage } from "imagekitio-react";
+import { useContext, useState } from "react";
+import { urlEndpoint } from "./api";
+import { FileUpload } from "./components/fileUpload";
+import { StatusContext } from "./StatusContext";
 
 function App() {
-  const [stage, setStage] = useState(1);
-  const [error, setError] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null);
+  const { status, setStatus } = useContext(StatusContext);
+  const [error] = useState("");
+  const [setSelectedFile] = useState(null);
 
   const StageRender = () => {
-    if (stage === 1) {
+    if (status === "initial") {
       return UploadStage();
-    } else if (stage === 2) {
+    } else if (status === "loading") {
       return UploadingStage();
-    } else if (stage === 3) {
+    } else if (status === "success") {
       return FinishedStage();
     } else {
       return ErrorStage();
@@ -18,115 +22,53 @@ function App() {
   };
 
   const UploadStage = () => {
-    const onFileChange = (event) => {
-      // Update the state
-      setSelectedFile(event.target.files[0]);
-    };
-
-    const fileUploadedIsImage = () => {
-      if (selectedFile) {
-        switch (selectedFile.type) {
-          case "image/png":
-            return true;
-          case "image/jpeg":
-            return true;
-          default:
-            return false;
-        }
-      }
-    };
-
-    const onFileUpload = () => {
-      if (selectedFile) {
-        if (fileUploadedIsImage()) {
-          // Create an object of formData
-          const formData = new FormData();
-
-          // Update the formData object
-          formData.append("myFile", selectedFile, selectedFile.name);
-
-          // Details of the uploaded file
-          console.log(selectedFile);
-
-          // Request made to the backend api
-          // Send formData object
-          setStage(2);
-        } else {
-          setStage(4);
-          setError("Invalid file type, must be PNG or JPG");
-        }
-      }
-    };
-
-    const fileData = () => {
-      if (selectedFile) {
-        return (
-          <div className="mt-4">
-            <h2>File Details:</h2>
-
-            <p>File Name: {selectedFile.name}</p>
-
-            <p>File Type: {selectedFile.type}</p>
-
-            <p>Last Modified: {selectedFile.lastModifiedDate.toDateString()}</p>
-          </div>
-        );
-      } else {
-        return (
-          <div>
-            <br />
-            <h4>Choose before Pressing the Upload button</h4>
-          </div>
-        );
-      }
-    };
-
     return (
       <div className="uploadStage">
-        <h1>Upload your image</h1>
-        <span>File should be Jpeg, Png,...</span>
-        <div>
-          <input type="file" name="" id="" onChange={onFileChange} />
-          <button disabled={selectedFile === null} className="btn btn-blue my-4" onClick={onFileUpload}>
-            Upload!
-          </button>
-        </div>
-        {fileData()}
+        <FileUpload></FileUpload>
       </div>
     );
   };
 
-
   const resetState = () => {
-    setStage(1);
-    setSelectedFile(null);
-  }
+    setStatus("initial");
+    sessionStorage.clear();
+  };
 
   const UploadingStage = () => {
     return (
       <div className="UploadingStage">
         <h2>Uploading</h2>
+        <div className="mt-6 relative w-full bg-gray-200 rounded">
+          <div className="loading-bar absolute top-0 h-4 rounded shim-blue"></div>
+        </div>
       </div>
     );
-  }
+  };
   const FinishedStage = () => {
+    var res = JSON.parse(sessionStorage.imageValues);
     return (
       <div className="FinishedStage">
-        <h2>FinishedStage</h2>
+        <IKImage urlEndpoint={urlEndpoint} path={res.name} />
+        <h2>Finished</h2>
+        <input className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500" readOnly  type="text" id="url" name="url" value={res.url}/>
+        <br/>
+        <button className="btn btn-blue my-4" onClick={resetState}>
+          Return
+        </button>
       </div>
     );
-  }
+  };
   const ErrorStage = () => {
     return (
       <div className="errorStage">
         <h2>Something went wrong</h2>
         <p>{error}</p>
-          <button className="btn btn-blue my-4" onClick={resetState}>
-            Return
-          </button>
+        <button className="btn btn-blue my-4" onClick={resetState}>
+          Return
+        </button>
       </div>
     );
-  }
+  };
 
   return (
     <div className="App container mx-auto py-4">
