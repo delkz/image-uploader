@@ -1,7 +1,5 @@
-const express = require("express");
-const app = express();
+const app = require("express")();
 const ImageKit = require("imagekit");
-require("dotenv").config({ path: "../.env" });
 
 const imagekit = new ImageKit({
     urlEndpoint: process.env.REACT_APP_URL_END_POINT,
@@ -11,8 +9,8 @@ const imagekit = new ImageKit({
 
 // allow cross-origin requests
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
@@ -24,6 +22,6 @@ app.get("/auth", function (req, res) {
   res.send(result);
 });
 
-app.listen(3001, function () {
-  console.log("Live at Port 3001");
-});
+
+
+module.exports = app;
