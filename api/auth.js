@@ -6,8 +6,7 @@ const imagekit = new ImageKit({
     privateKey: process.env.REACT_APP_PRIVATE_KEY,
 });
 
-
-module.exports = app;module.exports = (req, res) => {
+module.exports = (req, res) => {
     var result = imagekit.getAuthenticationParameters();
     res.send(result);
 };
