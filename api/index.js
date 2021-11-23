@@ -21,9 +21,5 @@ app.get('/api', (req, res) => {
   res.end(`Hello!`);
 });
 
-app.get('/api/auth', (req, res) => {
-  var result = imagekit.getAuthenticationParameters();
-  res.send(result);
-});
 
 module.exports = app;
