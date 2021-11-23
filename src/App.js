@@ -24,6 +24,8 @@ function App() {
   const UploadStage = () => {
     return (
       <div className="uploadStage">
+        <h1 className="my-8 title defaultText">Upload your image</h1>
+        <h2 className="mb-10 subtitle defaultText">File should be Jpeg, Png,...</h2>
         <FileUpload></FileUpload>
       </div>
     );
@@ -37,9 +39,9 @@ function App() {
   const UploadingStage = () => {
     return (
       <div className="UploadingStage">
-        <h2>Uploading</h2>
-        <div className="mt-6 relative w-full bg-gray-200 rounded">
-          <div className="loading-bar absolute top-0 h-4 rounded shim-blue"></div>
+        <h1 className="my-6 text-left uploading defaultText">Uploading...</h1>
+        <div className="my-6 relative w-full bg-gray-200 rounded-lg">
+          <div className="loading-bar absolute top-0 h-2 rounded-lg shim-blue"></div>
         </div>
       </div>
     );
@@ -48,8 +50,9 @@ function App() {
     var res = JSON.parse(sessionStorage.imageValues);
     return (
       <div className="FinishedStage">
-        <IKImage urlEndpoint={urlEndpoint} path={res.name} />
-        <h2>Finished</h2>
+        <h1 className="my-6 text-center uploading defaultText">Uploaded Successfully!</h1>
+        <IKImage className="rounded-xl mb-10" urlEndpoint={urlEndpoint} path={res.name} />
+        
         <input className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500" readOnly  type="text" id="url" name="url" value={res.url}/>
         <br/>
         <button className="btn btn-blue my-4" onClick={resetState}>
@@ -72,7 +75,7 @@ function App() {
 
   return (
     <div className="App container mx-auto py-4">
-      <div className="uploadBox text-center bg-white rounded-lg shadow-md max-w-md mx-auto p-4">
+      <div className="uploadBox text-center bg-white rounded-xl shadow-lg max-w-md mx-auto px-8 py-6">
         <StageRender />
       </div>
     </div>
